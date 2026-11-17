@@ -1,0 +1,65 @@
+---
+/**
+ * BehaviorSection — availability, redirect semantics, expiration.
+ * Mirrors the Go `BehaviorSection` template exactly (field grid + help copy).
+ */
+import Field from './Field.astro';
+import FormSection from './FormSection.astro';
+import Input from './Input.astro';
+import Select from './Select.astro';
+import type { LinkFormErrors, LinkFormValues } from '../lib/types';
+
+interface Props {
+  values: LinkFormValues;
+  errors?: LinkFormErrors;
+}
+
+const { values, errors = {} } = Astro.props;
+
+const statusOptions = [
+  { value: 'active', label: 'Active' },
+  { value: 'disabled', label: 'Disabled' },
+];
+
+const redirectOptions = [
+  { value: '302', label: '302 — Temporary' },
+  { value: '301', label: '301 — Permanent' },
+  { value: '307', label: '307 — Temporary, preserve method' },
+  { value: '308', label: '308 — Permanent, preserve method' },
+];
+---
+
+<FormSection title="Behavior" description="Control availability, redirect semantics, and expiration.">
+  <div class="field-grid">
+    <Field label="Status" forId="status">
+      <Select id="status" name="status" value={values.status} options={statusOptions} />
+    </Field>
+
+    <Field label="Redirect type" forId="redirect-status" error={errors.redirectStatus}>
+      <Select
+        id="redirect-status"
+        name="redirect_status"
+        value={values.redirectStatus}
+        options={redirectOptions}
+        invalid={Boolean(errors.redirectStatus)}
+      />
+    </Field>
+
+    <Field
+      label="Expiration"
+      hint="(UTC)"
+      forId="expires-at"
+      wide
+      help="Leave blank to keep this link active indefinitely."
+      error={errors.expiresAt}
+    >
+      <Input
+        id="expires-at"
+        name="expires_at"
+        type="datetime-local"
+        value={values.expiresAt}
+        invalid={Boolean(errors.expiresAt)}
+      />
+    </Field>
+  </div>
+</FormSection>

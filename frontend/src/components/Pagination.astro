@@ -1,0 +1,54 @@
+---
+/** Pagination — cursor pager rail inside the data surface.
+ *  The Go console shows only the forward control when there is no previous
+ *  cursor; `showPrevious` keeps both affordances where the concept shows them.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  label: string;
+  previousHref?: string;
+  nextHref?: string;
+  previousLabel?: string;
+  nextLabel?: string;
+  showPrevious?: boolean;
+}
+
+const {
+  label,
+  previousHref,
+  nextHref,
+  previousLabel = 'Previous',
+  nextLabel = 'Next',
+  showPrevious = true,
+} = Astro.props;
+---
+
+<div class="pagination">
+  <span>{label}</span>
+  <div class="pager-actions">
+    {
+      showPrevious &&
+        (previousHref ? (
+          <Button variant="secondary" href={previousHref}>
+            {previousLabel}
+          </Button>
+        ) : (
+          <Button variant="secondary" type="button" disabled>
+            {previousLabel}
+          </Button>
+        ))
+    }
+    {
+      nextHref ? (
+        <Button variant="secondary" href={nextHref}>
+          {nextLabel}
+        </Button>
+      ) : (
+        <Button variant="secondary" type="button" disabled>
+          {nextLabel}
+        </Button>
+      )
+    }
+  </div>
+</div>

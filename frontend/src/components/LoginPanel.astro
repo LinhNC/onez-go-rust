@@ -1,0 +1,39 @@
+---
+/**
+ * LoginPanel — the sign-in surface: brand, 28px headline, one API-key field,
+ * full-width primary action, and the privacy note as a divided footnote.
+ */
+import Brand from './Brand.astro';
+import Button from './Button.astro';
+import ErrorBanner from './ErrorBanner.astro';
+import Input from './Input.astro';
+
+interface Props {
+  error?: string;
+  action?: string;
+  title?: string;
+  description?: string;
+}
+
+const {
+  error,
+  action = '/login',
+  title = 'Manage your links',
+  description = 'Enter your administrator API key to start a secure session.',
+} = Astro.props;
+---
+
+<section class="login-panel" aria-labelledby="login-title">
+  <Brand href={action} />
+  <h1 id="login-title">{title}</h1>
+  <p>{description}</p>
+  <ErrorBanner message={error} />
+  <form action={action} method="post">
+    <div class="field">
+      <label for="api-key">API key</label>
+      <Input id="api-key" name="api_key" type="password" autocomplete="current-password" required invalid={Boolean(error)} />
+    </div>
+    <Button variant="primary" type="submit">Sign in</Button>
+  </form>
+  <p class="privacy-note">The key is verified once and is never stored in browser storage.</p>
+</section>

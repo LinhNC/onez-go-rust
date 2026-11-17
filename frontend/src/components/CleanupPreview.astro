@@ -1,0 +1,31 @@
+---
+/** CleanupPreview — the deletion preview surface: head with count, then list/more/confirm. */
+import { cn } from '../lib/cn';
+
+interface Props {
+  title?: string;
+  cutoffLabel: string;
+  countLabel: string;
+  labelledBy?: string;
+  class?: string;
+}
+
+const {
+  title = 'Deletion preview',
+  cutoffLabel,
+  countLabel,
+  labelledBy = 'cleanup-preview-title',
+  class: className,
+} = Astro.props;
+---
+
+<section class={cn('cleanup-preview', className)} aria-labelledby={labelledBy}>
+  <div class="cleanup-preview-head">
+    <div>
+      <h2 id={labelledBy}>{title}</h2>
+      <p>{cutoffLabel}</p>
+    </div>
+    <strong>{countLabel}</strong>
+  </div>
+  <slot />
+</section>

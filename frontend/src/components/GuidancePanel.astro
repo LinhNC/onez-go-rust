@@ -1,0 +1,28 @@
+---
+/** GuidancePanel — the create-flow side panel: short prose, never a metric card. */
+import { cn } from '../lib/cn';
+
+interface Props {
+  title?: string;
+  items?: string[];
+  class?: string;
+}
+
+const {
+  title = 'A good short link',
+  items = [
+    'Uses a memorable code when it will be shared manually.',
+    'Keeps 302 unless the destination is permanently fixed.',
+    'Adds a title or note so it is easy to find later.',
+  ],
+  class: className,
+} = Astro.props;
+---
+
+<aside class={cn('guidance-panel', className)}>
+  <h2>{title}</h2>
+  <ul>
+    {items.map((item) => <li>{item}</li>)}
+  </ul>
+  <slot />
+</aside>

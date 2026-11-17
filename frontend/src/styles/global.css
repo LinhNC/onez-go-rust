@@ -1,0 +1,18 @@
+/* =============================================================================
+   Shorten — stylesheet entry point
+   -----------------------------------------------------------------------------
+   Single entry compiled by Tailwind CSS v4 (@tailwindcss/vite) into one flat,
+   self-contained stylesheet:
+     crates/shorten-web/assets/styles.css
+   embedded by the Axum server at GET /assets/styles.css.
+
+   Order matters: theme → base → components → utilities.
+   No @import and no external font/URL references survive the build (CSP
+   `default-src 'self'`); Inter is referenced through system fallbacks only.
+   ============================================================================= */
+
+@layer theme, base, components, utilities;
+
+@import './design-tokens.css';
+@import './components.css';
+@import './utilities.css';

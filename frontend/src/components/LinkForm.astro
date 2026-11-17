@@ -1,0 +1,119 @@
+---
+/**
+ * LinkForm — the create/edit form surface shared by both flows, reproducing
+ * the Go `LinkFormSurface` anatomy: Destination → (Advanced options) →
+ * Behavior → Notes → action rail. Server-side validation is expressed through
+ * `aria-invalid` + `.field-error`, and HTMX swaps the whole surface
+ * (`hx-target="#link-form" hx-swap="outerHTML"`).
+ */
+import { BASE_URL } from '../lib/data';
+import type { LinkFormErrors, LinkFormValues } from '../lib/types';
+import AdvancedFields from './AdvancedFields.astro';
+import BehaviorSection from './BehaviorSection.astro';
+import Button from './Button.astro';
+import Field from './Field.astro';
+import FormSection from './FormSection.astro';
+import FormSurface from './FormSurface.astro';
+import Input from './Input.astro';
+import NotesSection from './NotesSection.astro';
+
+interface Props {
+  mode: 'create' | 'edit';
+  values: LinkFormValues;
+  errors?: LinkFormErrors;
+  /** Edit flow: the slug is immutable; renaming is its own confirmed flow. */
+  originalSlug?: string;
+  action?: string;
+}
+
+const { mode, values, errors = {}, originalSlug, action } = Astro.props;
+const isCreate = mode === 'create';
+
+const submitAction = action ?? (isCreate ? '/links/' : `/links/${originalSlug ?? ''}/`);
+const prefix = BASE_URL.replace('https://', '');
+---
+
+<FormSurface
+  id="link-form"
+  action={submitAction}
+  method="post"
+  hx-post={submitAction}
+  hx-target="#link-form"
+  hx-swap="outerHTML"
+>
+  <input type="hidden" name="csrf" value="design-system-preview" />
+
+  <FormSection title="Destination" description="The short URL and the page it should open.">
+    <div class="field-grid">
+      <Field label="Destination URL" forId="destination" wide error={errors.destination}>
+        <Input
+          id="destination"
+          name="destination"
+          type="url"
+          value={values.destination}
+          required
+          invalid={Boolean(errors.destination)}
+        />
+      </Field>
+
+      {
+        isCreate ? (
+          <Field
+            label="Short code"
+            hint="(optional)"
+            forId="slug"
+            prefix={prefix}
+            error={errors.slug}
+          >
+            <Input
+              id="slug"
+              name="slug"
+              value={values.slug}
+              maxlength={64}
+              invalid={Boolean(errors.slug)}
+            />
+          </Field>
+        ) : (
+          <Field
+            label="Short code"
+            forId="slug-display"
+            help="Use Rename short code to change this URL safely."
+          >
+            <Input id="slug-display" value={originalSlug ?? ''} readonly />
+          </Field>
+        )
+      }
+
+      <Field label="Title" forId="title" error={errors.title}>
+        <Input
+          id="title"
+          name="title"
+          value={values.title}
+          maxlength={200}
+          invalid={Boolean(errors.title)}
+        />
+      </Field>
+    </div>
+  </FormSection>
+
+  {
+    isCreate ? (
+      <AdvancedFields open>
+        <BehaviorSection values={values} errors={errors} />
+        <NotesSection value={values.notes} error={errors.notes} />
+      </AdvancedFields>
+    ) : (
+      <>
+        <BehaviorSection values={values} errors={errors} />
+        <NotesSection value={values.notes} error={errors.notes} />
+      </>
+    )
+  }
+
+  <div class="form-actions">
+    <Button variant="secondary" href="/">Cancel</Button>
+    <Button variant="primary" type="submit">
+      <span>{isCreate ? 'Create link' : 'Save changes'}</span>
+    </Button>
+  </div>
+</FormSurface>

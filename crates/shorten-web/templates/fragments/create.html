@@ -1,0 +1,8 @@
+<main class="shell">
+	<a class="back-link" href="/manage/links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Back to links</a>
+	<div class="page-heading"><div><h1>Create link</h1><p>Turn a destination into a short URL with the behavior you need.</p></div></div>
+	<div class="create-layout">
+		{% include "partials/link_form.html" %}
+		<aside class="guidance-panel"><h2>A good short link</h2><ul><li>Uses a memorable code when it will be shared manually.</li><li>Keeps 302 unless the destination is permanently fixed.</li><li>Adds a title or note so it is easy to find later.</li></ul></aside>
+	</div>
+</main>

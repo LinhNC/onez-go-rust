@@ -1,0 +1,11 @@
+{% macro field_error(message) %}
+	{% if !message.is_empty() %}<p class="field-error">{{ message }}</p>{% endif %}
+{% endmacro %}
+<section class="form-section">
+	<h2>Behavior</h2><p>Control availability, redirect semantics, and expiration.</p>
+	<div class="field-grid">
+		<div class="field"><label for="status">Status</label><select class="control" id="status" name="status"><option value="active"{% if model.status == "active" %} selected{% endif %}>Active</option><option value="disabled"{% if model.status == "disabled" %} selected{% endif %}>Disabled</option></select></div>
+		<div class="field"><label for="redirect-status">Redirect type</label><select class="control" id="redirect-status" name="redirect_status"><option value="302"{% if model.redirect_status == "302" %} selected{% endif %}>302 — Temporary</option><option value="301"{% if model.redirect_status == "301" %} selected{% endif %}>301 — Permanent</option><option value="307"{% if model.redirect_status == "307" %} selected{% endif %}>307 — Temporary, preserve method</option><option value="308"{% if model.redirect_status == "308" %} selected{% endif %}>308 — Permanent, preserve method</option></select>{{ field_error(model.error_text("redirectStatus")) }}</div>
+		<div class="field field-wide"><label for="expires-at">Expiration <span>(UTC)</span></label><input class="control" id="expires-at" name="expires_at" type="datetime-local" value="{{ model.expires_at }}" aria-invalid="{{ model.invalid("expiresAt") }}"/><p class="field-help">Leave blank to keep this link active indefinitely.</p>{{ field_error(model.error_text("expiresAt")) }}</div>
+	</div>
+</section>

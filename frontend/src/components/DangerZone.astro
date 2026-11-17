@@ -1,0 +1,37 @@
+---
+/**
+ * DangerZone — the quarantined destructive surface: red-tinted panel, red
+ * title, prose at danger-copy contrast, and the only solid red control.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  actionLabel?: string;
+  actionHref?: string;
+}
+
+const {
+  title = 'Delete this link',
+  description = 'This permanently removes the short URL. The destination will no longer be reachable from it.',
+  actionLabel = 'Delete link',
+  actionHref,
+} = Astro.props;
+---
+
+<section class="danger-zone">
+  <h2>{title}</h2>
+  <p>{description}</p>
+  {
+    actionHref ? (
+      <Button variant="danger" href={actionHref}>
+        {actionLabel}
+      </Button>
+    ) : (
+      <Button variant="danger" type="button">
+        {actionLabel}
+      </Button>
+    )
+  }
+</section>

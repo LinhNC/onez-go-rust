@@ -1,0 +1,19 @@
+# Build context is the Cargo workspace. Keep crates/** (source, Askama
+# templates and the embedded stylesheet) and Cargo.toml/Cargo.lock.
+.git
+.github
+.idea
+target
+.data
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+!.env.example
+frontend/node_modules
+frontend/.astro
+frontend/dist
+.pnpm-store
+docs
+*.md

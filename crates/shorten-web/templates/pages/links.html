@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+	<main class="shell">
+		<div class="page-heading">
+			<div>
+				<h1>Links</h1>
+				<p>Create, update, and monitor every short URL from one focused workspace.</p>
+			</div>
+			<div class="page-actions">
+				<a class="button button-secondary" href="/manage/cleanup">Cleanup old links</a>
+				<a class="button button-primary" href="/manage/links/new">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+					Create link
+				</a>
+			</div>
+		</div>
+		{% if model.meta.notice != "" %}
+			<div class="notice" role="status">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+				<span>{{ model.meta.notice }}</span>
+			</div>
+		{% endif %}
+		{% include "fragments/links.html" %}
+	</main>
+{% endblock %}

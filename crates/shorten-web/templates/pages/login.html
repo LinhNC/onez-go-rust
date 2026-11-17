@@ -1,0 +1,38 @@
+{% macro brand() %}
+<a class="brand" href="/manage/links" aria-label="Shorten — Links">
+	<span class="brand-mark" aria-hidden="true">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M9.5 14.5 14.5 9"></path><path d="M7.2 17.8H6a4 4 0 0 1 0-8h3M16.8 6.2H18a4 4 0 1 1 0 8h-3"></path></svg>
+	</span>
+	<span>Shorten</span>
+</a>
+{% endmacro %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Sign in — Shorten</title>
+		<link rel="stylesheet" href="/assets/styles.css?v=20260810-2"/>
+		<link rel="stylesheet" href="/assets/app.css?v=20260810-2"/>
+	</head>
+	<body>
+		<main class="login-shell">
+			<section class="login-panel" aria-labelledby="login-title">
+				{{ brand() }}
+				<h1 id="login-title">Manage your links</h1>
+				<p>Enter your administrator API key to start a secure session.</p>
+				{% if model.error != "" %}
+					<div class="error-banner" role="alert">{{ model.error }}</div>
+				{% endif %}
+				<form action="/manage/login" method="post">
+					<div class="field">
+						<label for="api-key">API key</label>
+						<input class="control" id="api-key" name="api_key" type="password" autocomplete="current-password" required aria-invalid="{{ (model.error != "").to_string() }}"/>
+					</div>
+					<button class="button button-primary" type="submit">Sign in</button>
+				</form>
+				<p class="privacy-note">The key is verified once and is never stored in browser storage.</p>
+			</section>
+		</main>
+	</body>
+</html>

@@ -1,0 +1,46 @@
+name: shorten
+
+services:
+  shorten:
+    image: ${SHORTEN_IMAGE:-shorten:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    env_file:
+      - ${SHORTEN_ENV_FILE:-.env}
+    environment:
+      SHORTEN_ADDRESS: ":8080"
+      SHORTEN_DATABASE_PATH: /data/shorten.db
+      SHORTEN_PUBLIC_BASE_URL: ${SHORTEN_PUBLIC_BASE_URL:?Set SHORTEN_PUBLIC_BASE_URL in .env}
+      SHORTEN_ADMIN_API_KEY: ${SHORTEN_ADMIN_API_KEY:?Set SHORTEN_ADMIN_API_KEY in .env}
+      SHORTEN_SESSION_SECRET: ${SHORTEN_SESSION_SECRET:?Set SHORTEN_SESSION_SECRET in .env}
+      SHORTEN_INSECURE_COOKIES: "false"
+    ports:
+      - "127.0.0.1:${SHORTEN_PORT:-8080}:8080"
+    volumes:
+      - shorten_data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "healthcheck"]
+      interval: 15s
+      timeout: 3s
+      start_period: 10s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  shorten_data:

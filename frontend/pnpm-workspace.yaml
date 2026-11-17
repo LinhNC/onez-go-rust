@@ -1,0 +1,7 @@
+# pnpm 12 reads install settings from pnpm-workspace.yaml.
+# Deps below ship legitimate postinstall builds (native bindings / platform binaries).
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - esbuild
+  - sharp
+  - unrs-resolver

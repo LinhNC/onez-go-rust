@@ -1,0 +1,30 @@
+---
+/**
+ * AdvancedFields — progressive disclosure for status, redirect type,
+ * expiration and notes on the create flow (PRODUCT.md principle 3:
+ * "Keep power progressive"). The `+` affordance rotates 45° on open.
+ */
+import { cn } from '../lib/cn';
+
+interface Props {
+  label?: string;
+  hint?: string;
+  open?: boolean;
+  class?: string;
+}
+
+const {
+  label = 'Advanced options',
+  hint = 'Status, redirect type, expiration, and private notes',
+  open = false,
+  class: className,
+} = Astro.props;
+---
+
+<details class={cn('advanced-fields', className)} open={open || undefined}>
+  <summary>
+    <span>{label}</span>
+    <small>{hint}</small>
+  </summary>
+  <slot />
+</details>

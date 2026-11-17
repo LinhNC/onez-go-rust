@@ -1,0 +1,33 @@
+---
+/**
+ * Console layout — the Go `Layout()` shell: sticky top bar + `main.shell`.
+ * The Axum server serves the compiled stylesheet from this same artifact at
+ * GET /assets/styles.css (rust-embed), plus app.css, htmx.min.js and app.js.
+ */
+import '../styles/global.css';
+import TopBar from '../components/TopBar.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  active?: 'links' | 'new' | 'edit' | 'cleanup' | 'confirm';
+  showCreate?: boolean;
+}
+
+const { title, description = 'Create and manage fast, reliable short links.', active, showCreate } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} — Shorten</title>
+  </head>
+  <body>
+    <TopBar active={active} showCreate={showCreate} />
+    <slot />
+  </body>
+</html>

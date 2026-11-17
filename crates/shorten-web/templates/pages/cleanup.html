@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+	<main class="shell cleanup-shell">
+		<a class="back-link" href="/manage/links"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Back to links</a>
+		<div class="page-heading"><div><h1>Cleanup old links</h1><p>Review links by age and remove obsolete records in one confirmed action.</p></div></div>
+		{% if model.meta.notice != "" %}
+			<div class="notice" role="status">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+				<span>{{ model.meta.notice }}</span>
+			</div>
+		{% endif %}
+		<section class="cleanup-surface" aria-labelledby="cleanup-options-title">
+			<div class="cleanup-intro">
+				<h2 id="cleanup-options-title">Choose what to review</h2>
+				<p>Age is based on the link creation date. Nothing is deleted while changing these controls.</p>
+			</div>
+			<form class="cleanup-filters" action="/manage/cleanup" method="get">
+				<div class="field"><label for="cleanup-months">Older than</label><select class="control" id="cleanup-months" name="months"><option value="3"{% if model.months == 3 %} selected{% endif %}>3 months</option><option value="6"{% if model.months == 6 %} selected{% endif %}>6 months</option><option value="12"{% if model.months == 12 %} selected{% endif %}>12 months</option></select></div>
+				<div class="field"><label for="cleanup-scope">Link state</label><select class="control" id="cleanup-scope" name="scope"><option value="inactive"{% if model.scope == "inactive" %} selected{% endif %}>Disabled or expired — recommended</option><option value="disabled"{% if model.scope == "disabled" %} selected{% endif %}>Disabled only</option><option value="expired"{% if model.scope == "expired" %} selected{% endif %}>Expired only</option><option value="all"{% if model.scope == "all" %} selected{% endif %}>All statuses, including active</option></select></div>
+				<button class="button button-secondary" type="submit">Refresh preview</button>
+			</form>
+		</section>
+		<section class="cleanup-preview" aria-labelledby="cleanup-preview-title">
+			<div class="cleanup-preview-head">
+				<div><h2 id="cleanup-preview-title">Deletion preview</h2><p>Created before {{ model.cutoff_date() }}</p></div>
+				<strong>{{ model.count_text() }} links</strong>
+			</div>
+			{% if model.form_error != "" %}
+				<div class="error-banner" role="alert">{{ model.form_error }}</div>
+			{% endif %}
+			{% if model.count == 0 %}
+				<div class="cleanup-empty"><strong>No links match these rules.</strong><span>Try a shorter age or a broader link state.</span></div>
+			{% else %}
+				<ul class="cleanup-list">
+					{% for item in &model.links %}
+						<li><div><a href="{{ model.link_url(item) }}">{{ model.short_url(item) }}</a><span>{{ model.item_note(item) }}</span></div><div class="cleanup-list-meta"><span class="{{ model.status_class(item) }}">{{ model.status_label(item) }}</span><time datetime="{{ model.created_stamp(item) }}">{{ model.created_date(item) }}</time></div></li>
+					{% endfor %}
+				</ul>
+				{% if model.shows_more() %}
+					<p class="cleanup-more">Showing the {{ model.listed() }} oldest matches. All {{ model.count_text() }} matching links will be deleted.</p>
+				{% endif %}
+				<form class="cleanup-confirm" action="/manage/cleanup" method="post">
+					<input type="hidden" name="csrf" value="{{ model.meta.csrf }}"/>
+					<input type="hidden" name="months" value="{{ model.months }}"/>
+					<input type="hidden" name="scope" value="{{ model.scope }}"/>
+					<label class="confirm-check"><input type="checkbox" name="confirm" value="yes" required/><span>I understand this permanently deletes {{ model.count_text() }} links and their redirect URLs.</span></label>
+					<button class="button button-danger" type="submit">Delete {{ model.count_text() }} old links</button>
+				</form>
+			{% endif %}
+		</section>
+	</main>
+{% endblock %}

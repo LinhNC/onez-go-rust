@@ -1,0 +1,48 @@
+---
+/**
+ * Input — 42px control with focus ring, placeholder, disabled and aria-invalid
+ * states. Mirrors `<input class="control" …>` from the Go templates.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+interface Props {
+  id?: string;
+  name?: string;
+  type?: 'text' | 'url' | 'search' | 'password' | 'email' | 'datetime-local' | 'number';
+  value?: string;
+  placeholder?: string;
+  autocomplete?: string;
+  maxlength?: number;
+  minlength?: number;
+  min?: string;
+  required?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  /** Sets aria-invalid="true" so the CSS danger border + focus ring engage. */
+  invalid?: boolean;
+  form?: string;
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const {
+  type = 'text',
+  invalid = false,
+  required = false,
+  readonly = false,
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<input
+  class={cn('control', className)}
+  type={type}
+  required={required || undefined}
+  readonly={readonly || undefined}
+  disabled={disabled || undefined}
+  aria-invalid={invalid ? 'true' : undefined}
+  {... rest}
+/>

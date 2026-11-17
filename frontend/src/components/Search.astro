@@ -1,0 +1,40 @@
+---
+/**
+ * Search — labelled search field with a leading glyph inside the control
+ * (`.search` + `.control` with 40px left padding). Label is visually hidden
+ * text plus icon; the input keeps its own accessible name.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  id?: string;
+  name?: string;
+  value?: string;
+  placeholder?: string;
+  ariaLabel?: string;
+  autocomplete?: string;
+}
+
+const {
+  id = 'search',
+  name = 'q',
+  value = '',
+  placeholder = 'Search links, destinations, or notes',
+  ariaLabel = 'Search links',
+  autocomplete = 'off',
+} = Astro.props;
+---
+
+<label class="search">
+  <Icon name="search" />
+  <input
+    class="control"
+    id={id}
+    name={name}
+    type="search"
+    value={value}
+    placeholder={placeholder}
+    aria-label={ariaLabel}
+    autocomplete={autocomplete}
+  />
+</label>

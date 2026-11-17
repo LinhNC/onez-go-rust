@@ -1,0 +1,50 @@
+---
+/**
+ * DataSurface — bounded white surface (12px radius, one structural border,
+ * no shadow at rest) with a table summary rail and the HTMX swap region.
+ * The `htmx-indicator` in the summary rail stays invisible at rest and fades
+ * in while a request is in flight.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+interface Props {
+  labelledBy?: string;
+  summaryLabel?: string;
+  summaryStrong?: string;
+  summarySuffix?: string;
+  /** Text of the in-flight indicator (announced by role="status"). */
+  indicator?: string;
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const {
+  labelledBy = 'link-count',
+  summaryStrong,
+  summaryLabel,
+  summarySuffix = 'in this workspace',
+  indicator = 'Updating…',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const forwarded: Record<string, string | number | boolean | undefined> = {};
+for (const [key, raw] of Object.entries(rest)) {
+  if (raw === undefined || raw === null) continue;
+  forwarded[key] = raw as string | number | boolean;
+}
+---
+
+<section class={cn('data-surface', className)} aria-labelledby={labelledBy} {... forwarded}>
+  <div class="table-summary">
+    <span id={labelledBy}>
+      {summaryStrong && <strong>{summaryStrong}</strong>}
+      {summaryLabel ?? ` ${summarySuffix}`}
+    </span>
+    <span class="htmx-indicator" role="status">
+      {indicator}
+    </span>
+  </div>
+  <slot />
+</section>

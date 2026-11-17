@@ -1,0 +1,60 @@
+[package]
+name = "shorten"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Shorten domain layer: configuration, link lifecycle, auth, redirect cache, analytics, metrics and the SQLite store."
+publish.workspace = true
+
+[lib]
+name = "shorten"
+path = "src/lib.rs"
+
+[dependencies]
+base64.workspace = true
+chrono.workspace = true
+hmac.workspace = true
+rand.workspace = true
+r2d2.workspace = true
+r2d2_sqlite.workspace = true
+regex.workspace = true
+rusqlite = { workspace = true, features = ["array", "trace", "chrono"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+subtle.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+missing_errors_doc = { level = "allow", priority = 1 }
+cast_possible_truncation = { level = "allow", priority = 1 }
+cast_sign_loss = { level = "allow", priority = 1 }
+items_after_statements = { level = "allow", priority = 1 }
+struct_excessive_bools = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+needless_pass_by_value = { level = "allow", priority = 1 }
+redundant_closure_for_method_calls = { level = "allow", priority = 1 }
+map_unwrap_or = { level = "allow", priority = 1 }
+single_char_pattern = { level = "allow", priority = 1 }
+single_char_lifetime_names = { level = "allow", priority = 1 }
+explicit_iter_loop = { level = "allow", priority = 1 }
+manual_let_else = { level = "allow", priority = 1 }
+match_same_arms = { level = "allow", priority = 1 }
+used_underscore_binding = { level = "allow", priority = 1 }
+trivially_copy_pass_by_ref = { level = "allow", priority = 1 }
+unnecessary_wraps = { level = "allow", priority = 1 }
+return_self_not_must_use = { level = "allow", priority = 1 }

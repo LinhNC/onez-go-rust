@@ -1,0 +1,50 @@
+---
+/**
+ * LinkRow — DataTable row anatomy for one short link, identical to the Go
+ * `LinkRow` template: short link + note, destination, status chip, visits,
+ * updated, and the trailing edit affordance.
+ */
+import Icon from './Icon.astro';
+import StatusBadge from './StatusBadge.astro';
+import { formatCount, type ShortLink } from '../lib/types';
+
+interface Props {
+  link: ShortLink;
+  /** Base URL used for the destination affordance target. */
+  external?: boolean;
+}
+
+const { link, external = true } = Astro.props;
+---
+
+<tr>
+  <td>
+    <a class="short-link" href={`/links/${link.slug}/`} title={link.shortUrl}>
+      {link.shortUrl}
+    </a>
+    <span class="row-note">{link.title ?? 'Untitled link'}</span>
+  </td>
+  <td>
+    <a
+      class="destination"
+      href={link.destination}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      title={link.destination}
+    >
+      {link.destination}
+    </a>
+  </td>
+  <td>
+    <StatusBadge status={link.status} />
+  </td>
+  <td class="numeric">{formatCount(link.visits)}</td>
+  <td class="time">{link.updated}</td>
+  <td>
+    <div class="link-actions">
+      <a class="row-edit" href={`/links/${link.slug}/`} aria-label={`Edit ${link.slug}`}>
+        <Icon name="pencil" stroke-width={1.9} />
+      </a>
+    </div>
+  </td>
+</tr>

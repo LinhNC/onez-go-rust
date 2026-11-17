@@ -1,0 +1,21 @@
+---
+/**
+ * StatusBadge (Chip) — lifecycle status with text + dot + semantic tint.
+ * Class output matches the Go class system (`status`) and the shadcn primitive
+ * name (`status-badge`) so both template generations render identically:
+ *   class="status-badge status-active"
+ * Colour is never the only signal (DESIGN.md §5 / WCAG 2.2 AA).
+ */
+import { cn } from '../lib/cn';
+import { statusLabel, type Status } from '../lib/types';
+
+interface Props {
+  status: Status;
+  label?: string;
+  class?: string;
+}
+
+const { status, label, class: className } = Astro.props;
+---
+
+<span class={cn('status-badge', `status-${status}`, className)}>{label ?? statusLabel(status)}</span>

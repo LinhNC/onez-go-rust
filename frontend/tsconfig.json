@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "src/**/*.ts", "src/**/*.astro", "scripts/**/*.mjs", "astro.config.mjs"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "verbatimModuleSyntax": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
+}

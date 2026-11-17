@@ -1,0 +1,52 @@
+---
+/**
+ * PreviewPanel — the live preview rail: head (title + status chip), the short
+ * URL, the clamped destination, and the metadata list. Sticky at 92px on
+ * desktop; moves above the form on tablet (components.css @820).
+ */
+import StatusBadge from './StatusBadge.astro';
+import { formatCount, statusLabel, type MetaEntry, type ShortLink, type Status } from '../lib/types';
+
+interface Props {
+  link: ShortLink;
+  title?: string;
+  status?: Status;
+  meta?: MetaEntry[];
+}
+
+const { link, title = 'Live preview', status, meta } = Astro.props;
+
+const resolvedStatus: Status = status ?? link.status;
+
+const entries: MetaEntry[] =
+  meta ??
+  [
+    { term: 'Redirect', detail: `${link.redirectStatus ?? '302'} Temporary` },
+    { term: 'Visits', detail: formatCount(link.visits) },
+    { term: 'Last visited', detail: '2 min ago' },
+    { term: 'Created', detail: link.created ?? '—' },
+  ];
+---
+
+<section class="preview">
+  <div class="preview-head">
+    <h2>{title}</h2>
+    <StatusBadge status={resolvedStatus} label={statusLabel(resolvedStatus)} />
+  </div>
+  <div class="preview-body">
+    <a class="preview-url" href={link.shortUrl} target="_blank" rel="noopener noreferrer">
+      {link.shortUrl}
+    </a>
+    <span class="preview-destination" title={link.destination}>{link.destination}</span>
+    <dl class="meta-list">
+      {
+        entries.map((entry) => (
+          <div class="meta-row">
+            <dt>{entry.term}</dt>
+            <dd>{entry.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

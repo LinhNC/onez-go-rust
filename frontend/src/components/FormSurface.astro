@@ -1,0 +1,29 @@
+---
+/**
+ * FormSurface — the bounded form container (`#link-form.form-surface`) that
+ * HTMX swaps wholesale (`hx-target="#link-form" hx-swap="outerHTML"`).
+ * Sections divide it; the action rail is the last child.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+interface Props {
+  id?: string;
+  action?: string;
+  method?: 'post' | 'get';
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const { id = 'link-form', action, method = 'post', class: className, ...rest } = Astro.props;
+---
+
+<form
+  id={id}
+  class={cn('form-surface', className)}
+  action={action}
+  method={method}
+  {... rest}
+>
+  <slot />
+</form>

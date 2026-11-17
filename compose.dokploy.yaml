@@ -1,0 +1,61 @@
+services:
+  shorten:
+    image: ${SHORTEN_IMAGE:-shorten:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    init: true
+    environment:
+      SHORTEN_ADDRESS: ":8080"
+      SHORTEN_DATABASE_PATH: /data/shorten.db
+      SHORTEN_PUBLIC_BASE_URL: ${SHORTEN_PUBLIC_BASE_URL:?Configure SHORTEN_PUBLIC_BASE_URL in Dokploy}
+      SHORTEN_ADMIN_API_KEY: ${SHORTEN_ADMIN_API_KEY:?Configure SHORTEN_ADMIN_API_KEY in Dokploy}
+      SHORTEN_SESSION_SECRET: ${SHORTEN_SESSION_SECRET:?Configure SHORTEN_SESSION_SECRET in Dokploy}
+      SHORTEN_PREVIOUS_SESSION_SECRET: ${SHORTEN_PREVIOUS_SESSION_SECRET:-}
+      SHORTEN_INSECURE_COOKIES: "false"
+      # Dokploy may not expose application variables while it expands Compose values.
+      # This deployment uses an opaque-origin browser context for management requests.
+      SHORTEN_ALLOW_NULL_ORIGIN: "true"
+      SHORTEN_READ_CONNECTIONS: "${SHORTEN_READ_CONNECTIONS:-4}"
+      SHORTEN_CACHE_CAPACITY: "${SHORTEN_CACHE_CAPACITY:-10000}"
+      SHORTEN_CACHE_POSITIVE_TTL: ${SHORTEN_CACHE_POSITIVE_TTL:-5m}
+      SHORTEN_CACHE_NEGATIVE_TTL: ${SHORTEN_CACHE_NEGATIVE_TTL:-10s}
+      SHORTEN_ANALYTICS_INTERVAL: ${SHORTEN_ANALYTICS_INTERVAL:-250ms}
+      SHORTEN_ANALYTICS_THRESHOLD: "${SHORTEN_ANALYTICS_THRESHOLD:-1000}"
+      SHORTEN_ANALYTICS_MAX_KEYS: "${SHORTEN_ANALYTICS_MAX_KEYS:-50000}"
+      SHORTEN_SESSION_TTL: ${SHORTEN_SESSION_TTL:-12h}
+      SHORTEN_SHUTDOWN_TIMEOUT: ${SHORTEN_SHUTDOWN_TIMEOUT:-15s}
+    expose:
+      - "8080"
+    volumes:
+      - shorten_data:/data
+    networks:
+      - dokploy-network
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 256
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "healthcheck"]
+      interval: 15s
+      timeout: 3s
+      start_period: 10s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+volumes:
+  shorten_data:
+
+networks:
+  dokploy-network:
+    external: true

@@ -1,0 +1,290 @@
+/* =============================================================================
+   Shorten — design tokens
+   -----------------------------------------------------------------------------
+   Token layer for the Shorten admin console (port of the accepted Go design
+   system: design/concepts/shorten-admin/concept.css + internal/web/assets/app.css).
+
+   Layer 1 = palette from DESIGN.md (hex, exact parity with the Go stylesheet).
+   Layer 2 = shadcn-style semantic custom properties (--background, --foreground,
+             --card, --popover, --primary, --muted, --accent, --border, --input,
+             --ring, --radius, --destructive) mapped onto layer 1.
+   Layer 3 = Tailwind v4 `@theme` bindings so utilities (bg-surface, text-muted,
+             rounded-md, font-headline, …) read the same custom properties.
+
+   Tailwind preflight is intentionally NOT imported: the Go templates ship their
+   own baseline (see the base layer at the bottom) and preflight would strip
+   list markers from .guidance-panel and native select affordances.
+   ============================================================================= */
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@source '../pages';
+@source '../components';
+@source '../layouts';
+
+/* --- Layer 1 · palette (DESIGN.md §2) ------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Neutral infrastructure */
+  --canvas: #f6f7f9; /* Cool Canvas — app background. Never cream/beige/warm. */
+  --surface: #ffffff; /* Control Surface — forms, tables, nav */
+  --surface-subtle: #f0f2f5; /* Recessed fill: ghost hover, meta wells, disabled chips */
+  --surface-sunken: #fafbfc; /* Table header, action rails */
+
+  /* Ink */
+  --ink: #101216; /* Carbon Ink — headings, high-emphasis text */
+  --ink-soft: #363b45; /* Graphite — body text, data values */
+  --muted: #626a78; /* Operational Gray — secondary copy (WCAG AA) */
+  --muted-strong: #6f7785; /* Placeholder ink */
+
+  /* Structure */
+  --line: #dce1e8; /* Structural Line — rows, sections, surfaces */
+  --line-strong: #c7ced8; /* Control borders */
+
+  /* Signal Blue: <10% of any screen (DESIGN.md "The Signal Rule") */
+  --signal-blue: #315dfb;
+  --signal-blue-hover: #244bd6;
+  --signal-blue-soft: #eef2ff;
+
+  /* Semantic pairs (text / tint) */
+  --success: #147a4b;
+  --success-soft: #eaf7f0;
+  --warning: #8a5b0a;
+  --warning-soft: #fff5d8;
+  --danger: #b92b24;
+  --danger-hover: #98221d;
+  --danger-soft: #fff0ef;
+  --danger-line: #efc7c4;
+  --danger-copy: #7f3934; /* danger-zone prose */
+  --confirm-copy: #713b37; /* destructive confirm prose */
+
+  /* Elevation vocabulary (DESIGN.md §4) — only two shadows exist */
+  --shadow-focus: 0 0 0 3px rgba(49, 93, 251, 0.15);
+  --shadow-overlay: 0 6px 8px rgba(16, 18, 22, 0.12);
+  --focus-outline: 3px solid rgba(49, 93, 251, 0.32);
+
+  /* Radius (DESIGN.md: 8px controls, 12px surfaces, 16px absolute ceiling) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Motion: 150–200ms state transitions on one easing curve */
+  --duration-fast: 160ms;
+  --duration-base: 180ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Rhythm */
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-section: 48px;
+
+  --content-width: 1180px;
+  --content-width-narrow: 920px;
+  --topbar-height: 68px;
+}
+
+/* --- Layer 2 · shadcn-style semantic tokens ------------------------------- */
+
+:root {
+  --background: var(--canvas);
+  --foreground: var(--ink);
+
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --overlay-shadow: var(--shadow-overlay);
+
+  --primary: var(--signal-blue);
+  --primary-foreground: #ffffff;
+  --primary-hover: var(--signal-blue-hover);
+  --primary-soft: var(--signal-blue-soft);
+
+  --secondary: var(--surface);
+  --secondary-foreground: var(--ink-soft);
+
+  --muted: var(--surface-subtle);
+  --muted-foreground: var(--muted);
+
+  /* shadcn `accent` = the quiet hover/selection wash (not the brand blue). */
+  --accent: var(--surface-subtle);
+  --accent-foreground: var(--ink);
+
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --destructive-hover: var(--danger-hover);
+  --destructive-soft: var(--danger-soft);
+
+  --success-on: var(--success);
+  --success-soft-token: var(--success-soft);
+  --warning-on: var(--warning);
+  --warning-soft-token: var(--warning-soft);
+
+  --border: var(--line);
+  --border-strong: var(--line-strong);
+  --input: var(--line-strong);
+  --input-placeholder: var(--muted-strong);
+
+  --ring: var(--signal-blue);
+  --ring-width: 3px;
+  --ring-shadow: var(--shadow-focus);
+  --focus-visible-outline: var(--focus-outline);
+
+  --radius: var(--radius-md);
+  --radius-control: var(--radius-sm);
+}
+
+/* --- Layer 3 · Tailwind v4 bindings --------------------------------------- */
+
+@theme inline {
+  --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-sunken: var(--surface-sunken);
+
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted);
+
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-border: var(--border);
+  --color-input: var(--input);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-soft: var(--destructive-soft);
+
+  --color-signal: var(--signal-blue);
+  --color-signal-hover: var(--signal-blue-hover);
+  --color-signal-soft: var(--signal-blue-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-line: var(--danger-line);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-control: var(--radius-control);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-focus: var(--shadow-focus);
+  --shadow-overlay: var(--shadow-overlay);
+
+  --ease-snap: var(--ease);
+  --ease-out-snap: var(--ease);
+
+  --breakpoint-tablet: 820px;
+  --breakpoint-phone: 640px;
+}
+
+/* Type hierarchy (DESIGN.md §3). Weights 450/650/700/730/760 are Inter
+   variable weights; system fallbacks round to the nearest available face. */
+
+@theme {
+  --text-headline: 32px;
+  --text-headline--line-height: 1.12;
+  --text-headline--letter-spacing: -0.035em;
+  --text-headline--font-weight: 760;
+
+  --text-title: 17px;
+  --text-title--line-height: 1.3;
+  --text-title--letter-spacing: -0.015em;
+  --text-title--font-weight: 700;
+
+  --text-body: 15px;
+  --text-body--line-height: 1.55;
+  --text-body--font-weight: 450;
+
+  --text-label: 13px;
+  --text-label--line-height: 1.3;
+  --text-label--font-weight: 700;
+
+  --text-data: 14px;
+  --text-data--line-height: 1.4;
+  --text-data--font-weight: 650;
+
+  --font-weight-body: 450;
+  --font-weight-data: 650;
+  --font-weight-label: 700;
+  --font-weight-strong: 730;
+  --font-weight-headline: 760;
+
+  --spacing-xs: 6px;
+  --spacing-sm: 10px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-section: 48px;
+}
+
+/* --- Base layer · the Go baseline (concept.css lines 26–30) --------------- */
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a {
+    color: inherit;
+  }
+}

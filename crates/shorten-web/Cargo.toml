@@ -1,0 +1,62 @@
+[package]
+name = "shorten-web"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Shorten HTTP layer: Axum router, redirect path, JSON API, HTMX management console."
+publish.workspace = true
+
+[lib]
+name = "shorten_web"
+path = "src/lib.rs"
+
+[dependencies]
+askama.workspace = true
+axum.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+http.workspace = true
+rust-embed.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+shorten.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "signal", "time", "sync"] }
+tower.workspace = true
+tower-http.workspace = true
+http-body-util = "0.1"
+tracing.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+tower = { workspace = true, features = ["util"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+missing_errors_doc = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+struct_excessive_bools = { level = "allow", priority = 1 }
+needless_pass_by_value = { level = "allow", priority = 1 }
+redundant_closure_for_method_calls = { level = "allow", priority = 1 }
+cast_possible_truncation = { level = "allow", priority = 1 }
+cast_sign_loss = { level = "allow", priority = 1 }
+unused_async = { level = "allow", priority = 1 }
+items_after_statements = { level = "allow", priority = 1 }
+single_char_lifetime_names = { level = "allow", priority = 1 }
+result_large_err = { level = "allow", priority = 1 }
+explicit_iter_loop = { level = "allow", priority = 1 }
+match_same_arms = { level = "allow", priority = 1 }
+trivially_copy_pass_by_ref = { level = "allow", priority = 1 }
+unnecessary_wraps = { level = "allow", priority = 1 }
+return_self_not_must_use = { level = "allow", priority = 1 }
+used_underscore_binding = { level = "allow", priority = 1 }
+type_repetition_in_bounds = { level = "allow", priority = 1 }
+wildcard_imports = { level = "allow", priority = 1 }

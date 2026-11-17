@@ -1,0 +1,97 @@
+/* =============================================================================
+   Shorten — utilities & accessibility layer
+   -----------------------------------------------------------------------------
+   Atomic, cross-cutting rules from the supplementary production stylesheet
+   (internal/web/assets/app.css) plus the shadcn-style helpers used by the
+   .astro primitives. Layered as `utilities`, so these always win over
+   component rules.
+   ============================================================================= */
+
+@layer utilities {
+  /* Screen-reader-only text (table action headers, live regions). */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* HTMX swap targets must never flash. */
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Keyboard focus: one visible blue treatment everywhere (WCAG 2.2 AA). */
+  :focus-visible {
+    outline: var(--focus-visible-outline);
+    outline-offset: 2px;
+  }
+
+  /* Compact focus ring for controls; matches DESIGN.md §4 shadow vocabulary. */
+  .ring-focus {
+    box-shadow: var(--shadow-focus);
+  }
+
+  .ring-focus-primary {
+    box-shadow: 0 0 0 3px rgba(49, 93, 251, 0.22);
+  }
+
+  .ring-danger {
+    box-shadow: 0 0 0 3px rgba(185, 43, 36, 0.15);
+  }
+
+  /* Floating overlay: the only elevated surface in the system (menus/popovers). */
+  .popover {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--popover);
+    color: var(--popover-foreground);
+    box-shadow: var(--shadow-overlay);
+  }
+
+  /* Tabular numerals for counts (DESIGN.md §3, "Data" tier). */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Single-line ellipsis, reused by record rows and preview copy. */
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* HTMX request indicator: silent at rest, fades in during a swap. */
+  .htmx-indicator {
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease);
+  }
+
+  .htmx-request .htmx-indicator,
+  .htmx-request.htmx-indicator {
+    opacity: 1;
+  }
+
+  /* `.login-panel > p` out-specifies `.privacy-note`; the Go app forces this
+     with !important, so parity requires the same treatment. */
+  .privacy-note {
+    margin: 20px 0 0 !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Reduced motion: state changes become instant, scrolling is not smooth. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

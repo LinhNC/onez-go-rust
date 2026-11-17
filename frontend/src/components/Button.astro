@@ -1,0 +1,55 @@
+---
+/**
+ * Button — shadcn-style primitive over the accepted `.button` class system.
+ * One primary per view (DESIGN.md §5); geometry is shared by every variant.
+ * Renders an `<a>` when `href` is present, a `<button>` otherwise, so the
+ * Go/Askama markup (`<a class="button button-primary" href="…">`) is reproduced
+ * byte-for-byte in class terms.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+
+interface Props {
+  variant?: Variant;
+  href?: string;
+  target?: string;
+  rel?: string;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  name?: string;
+  value?: string;
+  form?: string;
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const {
+  variant = 'primary',
+  href,
+  class: className,
+  disabled = false,
+  type = 'button',
+  ...rest
+} = Astro.props;
+
+const classes = cn('button', `button-${variant}`, className);
+---
+
+{
+  href ? (
+    <a
+      class={classes}
+      href={href}
+      aria-disabled={disabled ? 'true' : undefined}
+      {... rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button class={classes} type={type} disabled={disabled || undefined} {... rest}>
+      <slot />
+    </button>
+  )
+}

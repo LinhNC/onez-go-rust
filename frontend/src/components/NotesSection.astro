@@ -1,0 +1,19 @@
+---
+/** NotesSection — private context, the last divided section of the form. */
+import Field from './Field.astro';
+import FormSection from './FormSection.astro';
+import Textarea from './Textarea.astro';
+
+interface Props {
+  value: string;
+  error?: string;
+}
+
+const { value, error } = Astro.props;
+---
+
+<FormSection title="Notes" description="Private context to make this link easier to find later.">
+  <Field label="Notes" forId="notes" error={error}>
+    <Textarea id="notes" name="notes" value={value} maxlength={4000} invalid={Boolean(error)} />
+  </Field>
+</FormSection>

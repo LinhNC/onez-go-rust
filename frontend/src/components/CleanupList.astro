@@ -1,0 +1,30 @@
+---
+/** CleanupList — reviewed-record list: short link + note, status, created date. */
+import StatusBadge from './StatusBadge.astro';
+import type { ShortLink } from '../lib/types';
+
+interface Props {
+  links: ShortLink[];
+}
+
+const { links } = Astro.props;
+---
+
+<ul class="cleanup-list">
+  {
+    links.map((link) => (
+      <li>
+        <div>
+          <a href={`/links/${link.slug}/`} title={link.shortUrl}>
+            {link.shortUrl}
+          </a>
+          <span title={link.title ?? link.destination}>{link.title ?? link.destination}</span>
+        </div>
+        <div class="cleanup-list-meta">
+          <StatusBadge status={link.status} />
+          <time datetime={link.created ?? undefined}>{link.created ?? '—'}</time>
+        </div>
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,26 @@
+---
+/** CleanupSurface — the "choose what to review" panel of the cleanup flow. */
+import { cn } from '../lib/cn';
+
+interface Props {
+  title?: string;
+  description?: string;
+  labelledBy?: string;
+  class?: string;
+}
+
+const {
+  title = 'Choose what to review',
+  description = 'Age is based on the link creation date. Nothing is deleted while changing these controls.',
+  labelledBy = 'cleanup-options-title',
+  class: className,
+} = Astro.props;
+---
+
+<section class={cn('cleanup-surface', className)} aria-labelledby={labelledBy}>
+  <div class="cleanup-intro">
+    <h2 id={labelledBy}>{title}</h2>
+    <p>{description}</p>
+  </div>
+  <slot />
+</section>

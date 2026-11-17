@@ -1,0 +1,43 @@
+---
+/**
+ * ConfirmationSurface — the reversible-decision flow (rename / delete):
+ * headline, one line of consequence copy, the record being acted on, and a
+ * divided action rail.
+ */
+import { cn } from '../lib/cn';
+
+interface Props {
+  title: string;
+  description: string;
+  recordPrimary: string;
+  recordSecondary?: string;
+  action?: string;
+  method?: 'post';
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  recordPrimary,
+  recordSecondary,
+  action,
+  method = 'post',
+  class: className,
+} = Astro.props;
+---
+
+<section class={cn('confirmation-surface', className)}>
+  <div class="confirmation-copy">
+    <h1>{title}</h1>
+    <p>{description}</p>
+    <div class="confirmation-record">
+      <strong>{recordPrimary}</strong>
+      {recordSecondary && <span>{recordSecondary}</span>}
+    </div>
+    <slot />
+  </div>
+  <form id="confirm-form" class="confirmation-actions" action={action} method={method}>
+    <slot name="actions" />
+  </form>
+</section>

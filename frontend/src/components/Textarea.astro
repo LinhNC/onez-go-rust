@@ -1,0 +1,41 @@
+---
+/**
+ * Textarea — `<textarea class="control">` (104px min height, vertical resize),
+ * used by the Notes section of the link form.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+interface Props {
+  id?: string;
+  name?: string;
+  value?: string;
+  rows?: number;
+  maxlength?: number;
+  placeholder?: string;
+  required?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
+  invalid?: boolean;
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const {
+  required = false,
+  readonly = false,
+  disabled = false,
+  invalid = false,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<textarea
+  class={cn('control', className)}
+  required={required || undefined}
+  readonly={readonly || undefined}
+  disabled={disabled || undefined}
+  aria-invalid={invalid ? 'true' : undefined}
+  {... rest}
+>{Astro.props.value ?? ''}</textarea>

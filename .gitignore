@@ -1,0 +1,18 @@
+# Cargo build artifacts. Cargo.lock is committed: this is an application, not a library.
+/target
+**/*.rs.bk
+*.profraw
+*.profdata
+
+# Runtime state
+.data/
+*.db
+*.db-shm
+*.db-wal
+.env
+
+# Design system build
+node_modules/
+pnpm-store/
+dist/
+.astro/

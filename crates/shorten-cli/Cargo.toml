@@ -1,0 +1,77 @@
+[package]
+name = "shorten-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Shorten operational binaries: backup, kvimport, seed, bench, querybench, healthcheck."
+publish.workspace = true
+
+[lib]
+name = "shorten_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "backup"
+path = "src/bin/backup.rs"
+
+[[bin]]
+name = "kvimport"
+path = "src/bin/kvimport.rs"
+
+[[bin]]
+name = "seed"
+path = "src/bin/seed.rs"
+
+[[bin]]
+name = "bench"
+path = "src/bin/bench.rs"
+
+[[bin]]
+name = "querybench"
+path = "src/bin/querybench.rs"
+
+[[bin]]
+name = "healthcheck"
+path = "src/bin/healthcheck.rs"
+
+[dependencies]
+shorten.workspace = true
+chrono.workspace = true
+futures.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "time", "sync"] }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = { level = "allow", priority = 1 }
+module_name_repetitions = { level = "allow", priority = 1 }
+missing_panics_doc = { level = "allow", priority = 1 }
+missing_errors_doc = { level = "allow", priority = 1 }
+cast_possible_truncation = { level = "allow", priority = 1 }
+cast_sign_loss = { level = "allow", priority = 1 }
+cast_precision_loss = { level = "allow", priority = 1 }
+items_after_statements = { level = "allow", priority = 1 }
+struct_excessive_bools = { level = "allow", priority = 1 }
+too_many_lines = { level = "allow", priority = 1 }
+needless_pass_by_value = { level = "allow", priority = 1 }
+redundant_closure_for_method_calls = { level = "allow", priority = 1 }
+map_unwrap_or = { level = "allow", priority = 1 }
+single_char_pattern = { level = "allow", priority = 1 }
+single_char_lifetime_names = { level = "allow", priority = 1 }
+explicit_iter_loop = { level = "allow", priority = 1 }
+manual_let_else = { level = "allow", priority = 1 }
+match_same_arms = { level = "allow", priority = 1 }
+used_underscore_binding = { level = "allow", priority = 1 }
+trivially_copy_pass_by_ref = { level = "allow", priority = 1 }
+unnecessary_wraps = { level = "allow", priority = 1 }
+return_self_not_must_use = { level = "allow", priority = 1 }

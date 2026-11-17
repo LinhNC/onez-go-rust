@@ -1,0 +1,31 @@
+---
+/**
+ * EmptyState — quiet, actionable emptiness inside a data surface: glyph,
+ * 17px title, 44ch muted explanation, and one primary action.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  icon?: 'link' | 'search' | 'alert';
+  actionLabel?: string;
+  actionHref?: string;
+}
+
+const { title, description, icon = 'link', actionLabel, actionHref } = Astro.props;
+---
+
+<div class="empty-state">
+  <Icon name={icon} stroke-width={1.8} />
+  <h2>{title}</h2>
+  {description && <p>{description}</p>}
+  {
+    actionLabel && actionHref && (
+      <a class="button button-primary" href={actionHref}>
+        {actionLabel}
+      </a>
+    )
+  }
+  <slot />
+</div>

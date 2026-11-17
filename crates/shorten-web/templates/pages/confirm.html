@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block content %}
+	<main class="shell confirmation">
+		<a class="back-link" href="{{ model.back_url() }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg>Back to link</a>
+		<section class="confirmation-surface">
+			<div class="confirmation-copy">
+				{% if model.rename %}
+					<h1>Rename this short code?</h1>
+					<p>The old short URL will stop working immediately after the rename.</p>
+				{% else %}
+					<h1>Delete this link?</h1>
+					<p>This permanently removes the short URL and cannot be undone.</p>
+				{% endif %}
+				<div class="confirmation-record"><strong>{{ model.short_url() }}</strong><span>{{ model.link.destination_url }}</span></div>
+				{% if model.meta.error != "" %}
+					<div class="error-banner" role="alert">{{ model.meta.error }}</div>
+				{% endif %}
+				{% if model.rename %}
+					<div class="field rename-field"><label for="new-slug">New short code</label><input form="confirm-form" class="control" id="new-slug" name="slug" value="{{ model.link.slug }}" required maxlength="64"/></div>
+				{% endif %}
+			</div>
+			<form id="confirm-form" class="confirmation-actions" action="{{ model.confirm_action() }}" method="post">
+				<input type="hidden" name="csrf" value="{{ model.meta.csrf }}"/>
+				<a class="button button-secondary" href="{{ model.back_url() }}">Cancel</a>
+				{% if model.rename %}
+					<button class="button button-primary" type="submit">Rename short code</button>
+				{% else %}
+					<button class="button button-danger" type="submit">Delete link</button>
+				{% endif %}
+			</form>
+		</section>
+	</main>
+{% endblock %}

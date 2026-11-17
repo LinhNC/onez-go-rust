@@ -1,0 +1,31 @@
+---
+/**
+ * ConfirmCheck — the destructive-action gate: an explicit, readable statement
+ * with a red accent checkbox. The target count is interpolated so the user
+ * confirms the exact blast radius.
+ */
+import { cn } from '../lib/cn';
+
+interface Props {
+  id?: string;
+  name?: string;
+  value?: string;
+  label: string;
+  required?: boolean;
+  class?: string;
+}
+
+const {
+  id,
+  name = 'confirm',
+  value = 'yes',
+  label,
+  required = true,
+  class: className,
+} = Astro.props;
+---
+
+<label class={cn('confirm-check', className)} for={id}>
+  <input type="checkbox" id={id} name={name} value={value} required={required || undefined} />
+  <span>{label}</span>
+</label>

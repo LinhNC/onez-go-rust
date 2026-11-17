@@ -1,0 +1,26 @@
+[package]
+name = "shorten-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Shorten server binary."
+publish.workspace = true
+
+[[bin]]
+name = "shorten"
+path = "src/main.rs"
+
+[dependencies]
+shorten.workspace = true
+shorten-web.workspace = true
+axum = { workspace = true, features = ["macros"] }
+hyper = { workspace = true }
+hyper-util = { workspace = true }
+tower = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread", "signal", "time", "sync", "net", "io-util"] }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[lints.rust]
+unsafe_code = "forbid"

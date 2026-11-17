@@ -1,0 +1,21 @@
+---
+/**
+ * Toolbar — the filter row above a data surface. Stacks vertically on phone.
+ * Default slot takes the search field and the two selects.
+ */
+import { cn, type Attr, type Children } from '../lib/cn';
+
+interface Props {
+  action?: string;
+  method?: 'get' | 'post';
+  class?: string;
+  children?: Children;
+  [key: string]: Attr | Children;
+}
+
+const { action, method = 'get', class: className, ...rest } = Astro.props;
+---
+
+<form class={cn('toolbar', className)} action={action} method={method} {... rest}>
+  <slot />
+</form>

@@ -1,0 +1,17 @@
+---
+/** Brand lockup: ink mark + wordmark (Go `Brand()` template). */
+import Icon from './Icon.astro';
+
+interface Props {
+  href?: string;
+}
+
+const { href = '/' } = Astro.props;
+---
+
+<a class="brand" href={href} aria-label="Shorten — Links">
+  <span class="brand-mark" aria-hidden="true">
+    <Icon name="brand" stroke-width={2.1} />
+  </span>
+  <span>Shorten</span>
+</a>

@@ -1,0 +1,22 @@
+---
+/**
+ * Notice — success confirmation announced to assistive tech (role="status").
+ * Empty messages render nothing, exactly like the Go `Notice()` template.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  message?: string;
+}
+
+const { message } = Astro.props;
+---
+
+{
+  message && (
+    <div class="notice" role="status">
+      <Icon name="check" />
+      <span>{message}</span>
+    </div>
+  )
+}

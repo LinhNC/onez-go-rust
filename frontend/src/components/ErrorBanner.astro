@@ -1,0 +1,10 @@
+---
+/** ErrorBanner — destructive/error surface announced with role="alert". */
+interface Props {
+  message?: string;
+}
+
+const { message } = Astro.props;
+---
+
+{message && <div class="error-banner" role="alert">{message}</div>}

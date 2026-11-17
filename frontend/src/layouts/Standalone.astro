@@ -1,0 +1,24 @@
+---
+/** Standalone layout — no top bar: the sign-in surface centers on the canvas. */
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Create and manage fast, reliable short links.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} — Shorten</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

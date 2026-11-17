@@ -1,0 +1,86 @@
+---
+// Port of the Go `LinksContent` / `LinksSurface` templates and of
+// design/concepts/shorten-admin/index.html — the accepted list view.
+import Console from '../layouts/Console.astro';
+import PageHeading from '../components/PageHeading.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import Notice from '../components/Notice.astro';
+import Toolbar from '../components/Toolbar.astro';
+import Search from '../components/Search.astro';
+import Select from '../components/Select.astro';
+import DataSurface from '../components/DataSurface.astro';
+import Table from '../components/Table.astro';
+import LinkRow from '../components/LinkRow.astro';
+import Pagination from '../components/Pagination.astro';
+import { links } from '../lib/data';
+import type { Column } from '../lib/types';
+
+const columns: Column[] = [
+  { label: 'Short link' },
+  { label: 'Destination' },
+  { label: 'Status' },
+  { label: 'Visits' },
+  { label: 'Updated' },
+  { label: 'Actions', srOnly: true },
+];
+
+const statusOptions = [
+  { value: 'all', label: 'All statuses' },
+  { value: 'active', label: 'Active' },
+  { value: 'disabled', label: 'Disabled' },
+  { value: 'expired', label: 'Expired' },
+  { value: 'unexpired', label: 'Unexpired' },
+];
+
+const sortOptions = [
+  { value: 'updated', label: 'Recently updated' },
+  { value: 'created', label: 'Newest created' },
+  { value: 'visits', label: 'Most visited' },
+  { value: 'slug', label: 'Short code' },
+  { value: 'destination', label: 'Destination' },
+];
+---
+
+<Console title="Links" active="links">
+  <main class="shell">
+    <PageHeading
+      title="Links"
+      description="Create, update, and monitor every short URL from one focused workspace."
+    >
+      <div slot="actions" class="page-actions">
+        <Button variant="secondary" href="/cleanup/">Cleanup old links</Button>
+        <Button variant="primary" href="/links/new/">
+          <Icon name="plus" />
+          Create link
+        </Button>
+      </div>
+    </PageHeading>
+
+    <Notice message={''} />
+
+    <div id="links-region">
+      <Toolbar
+        action="/links/"
+        method="get"
+        hx-get="/"
+        hx-target="#links-region"
+        hx-swap="outerHTML"
+        hx-push-url="true"
+        hx-trigger="input changed delay:250ms, change"
+      >
+        <Search />
+        <Select name="status" ariaLabel="Filter by status" value="all" options={statusOptions} />
+        <Select name="sort" ariaLabel="Sort links" value="updated" options={sortOptions} />
+        <input type="hidden" name="dir" value="desc" />
+      </Toolbar>
+
+      <DataSurface summaryStrong="24 links" summarySuffix="in this workspace">
+        <Table columns={columns}>
+          {links.map((link) => <LinkRow link={link} />)}
+        </Table>
+        <Pagination label="Showing 1–5 of 24" nextHref="#" />
+      </DataSurface>
+    </div>
+  </main>
+</Console>

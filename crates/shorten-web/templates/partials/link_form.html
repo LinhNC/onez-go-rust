@@ -1,0 +1,38 @@
+{% macro field_error(message) %}
+	{% if !message.is_empty() %}<p class="field-error">{{ message }}</p>{% endif %}
+{% endmacro %}
+<form id="link-form" class="form-surface" action="{{ model.form_action() }}" method="post" hx-post="{{ model.form_action() }}" hx-target="#link-form" hx-swap="outerHTML">
+	<input type="hidden" name="csrf" value="{{ model.meta.csrf }}"/>
+	<section class="form-section">
+		<h2>Destination</h2><p>The short URL and the page it should open.</p>
+		<div class="field-grid">
+			<div class="field field-wide"><label for="destination">Destination URL</label><input class="control" id="destination" name="destination" type="url" value="{{ model.destination }}" required aria-invalid="{{ model.invalid("destination") }}"/>{{ field_error(model.error_text("destination")) }}</div>
+			{% if model.is_create %}
+				<div class="field"><label for="slug">Short code <span>(optional)</span></label><input class="control" id="slug" name="slug" value="{{ model.slug }}" maxlength="64" aria-invalid="{{ model.invalid("slug") }}"/>{{ field_error(model.error_text("slug")) }}</div>
+			{% else %}
+				<div class="field"><label for="slug-display">Short code</label><input class="control" id="slug-display" value="{{ model.original_slug }}" readonly/><p class="field-help">Use Rename short code to change this URL safely.</p></div>
+			{% endif %}
+			<div class="field"><label for="title">Title</label><input class="control" id="title" name="title" value="{{ model.title }}" maxlength="200" aria-invalid="{{ model.invalid("title") }}"/>{{ field_error(model.error_text("title")) }}</div>
+		</div>
+	</section>
+	{% if model.is_create %}
+		<details class="advanced-fields"{% if model.advanced_open() %} open{% endif %}>
+			<summary><span>Advanced options</span><small>Status, redirect type, expiration, and private notes</small></summary>
+			{% include "partials/behavior.html" %}
+			{% include "partials/notes.html" %}
+		</details>
+	{% else %}
+		{% include "partials/behavior.html" %}
+		{% include "partials/notes.html" %}
+	{% endif %}
+	<div class="form-actions">
+		<a class="button button-secondary" href="/manage/links">Cancel</a>
+		<button class="button button-primary" type="submit">
+			{% if model.is_create %}
+				<span>Create link</span>
+			{% else %}
+				<span>Save changes</span>
+			{% endif %}
+		</button>
+	</div>
+</form>

@@ -1,0 +1,16 @@
+---
+/** BackLink — low-emphasis return link with chevron (`.back-link`). */
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  label?: string;
+}
+
+const { href, label = 'Back to links' } = Astro.props;
+---
+
+<a class="back-link" href={href}>
+  <Icon name="back" />
+  {label}
+</a>

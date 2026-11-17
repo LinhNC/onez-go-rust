@@ -1,0 +1,14 @@
+---
+/** SummaryPanel — the sticky 318px right rail on the edit flow. */
+import { cn } from '../lib/cn';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<aside class={cn('summary-panel', className)}>
+  <slot />
+</aside>

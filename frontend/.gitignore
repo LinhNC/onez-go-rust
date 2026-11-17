@@ -1,0 +1,27 @@
+# build artifacts
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# pnpm
+pnpm-lock.yaml.tmp/
+.pnpm-store/
+
+# generated QA screenshots
+.qa/
+
+# logs
+*.log
+npm-debug.log*
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# env
+.env
+.env.local

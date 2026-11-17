@@ -1,0 +1,57 @@
+---
+/**
+ * TopBar — sticky 68px bar: brand, primary nav with the 2px Signal Blue
+ * underline on the active item, session action, and the single primary
+ * creation action. Mobile keeps brand + create (see components.css @820/@640).
+ */
+import Brand from './Brand.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+
+type Active = 'links' | 'new' | 'edit' | 'cleanup' | 'confirm' | undefined;
+
+interface Props {
+  active?: Active;
+  /** Hide the create action on the create flow (one primary per view). */
+  showCreate?: boolean;
+}
+
+const { active, showCreate = true } = Astro.props;
+
+const nav: { key: string; label: string; href: string }[] = [
+  { key: 'links', label: 'Links', href: '/' },
+  { key: 'new', label: 'New link', href: '/links/new/' },
+];
+---
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <Brand href="/" />
+    <nav class="nav" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={active === item.key ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="top-actions">
+      <form action="/logout" method="post">
+        <input type="hidden" name="csrf" value="design-system-preview" />
+        <Button variant="ghost" type="submit">Sign out</Button>
+      </form>
+      {
+        showCreate && (
+          <Button variant="primary" href="/links/new/">
+            <Icon name="plus" />
+            Create link
+          </Button>
+        )
+      }
+    </div>
+  </div>
+</header>

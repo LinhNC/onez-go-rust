@@ -1,0 +1,61 @@
+---
+/**
+ * Field — label + control + help + error, the anatomy used by every form
+ * section: `.field`, `.field-wide`, `.field-help`, `.field-error`.
+ * Also renders the `.prefix-field` treatment (fixed short-code prefix).
+ */
+import { cn } from '../lib/cn';
+
+interface Props {
+  label?: string;
+  /** Secondary label copy, e.g. "(optional)" — sentence case, muted. */
+  hint?: string;
+  /** Associates the label with the control (for=/id=). */
+  forId?: string;
+  help?: string;
+  /** Server-side validation copy; sets the field's danger state. */
+  error?: string;
+  wide?: boolean;
+  /** Fixed prefix shown as an attached add-on (e.g. "short.example/"). */
+  prefix?: string;
+  class?: string;
+}
+
+const {
+  label,
+  hint,
+  forId,
+  help,
+  error,
+  wide = false,
+  prefix,
+  class: className,
+} = Astro.props;
+
+const hasError = Boolean(error);
+---
+
+<div class={cn('field', wide && 'field-wide', className)}>
+  {
+    label && (
+      <label for={forId}>
+        {label}
+        {hint && <span> {hint}</span>}
+      </label>
+    )
+  }
+
+  {
+    prefix ? (
+      <div class="prefix-field">
+        <span>{prefix}</span>
+        <slot />
+      </div>
+    ) : (
+      <slot />
+    )
+  }
+
+  {help && !hasError && <p class="field-help">{help}</p>}
+  {hasError && <p class="field-error">{error}</p>}
+</div>

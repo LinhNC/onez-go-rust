@@ -1,0 +1,37 @@
+---
+/**
+ * Table — desktop table anatomy (`.data-table`): neutral header row, 72px
+ * body rows, one bottom border per row, hover tint. On phone the same
+ * anatomy becomes open stacked records (see components.css @640), the header
+ * disappears and the action cell rides to the top right.
+ *
+ * Column widths are intentionally unset by default: with `table-layout: fixed`
+ * the console uses six equal columns, exactly like the Go templates.
+ */
+import { cn } from '../lib/cn';
+import type { Column } from '../lib/types';
+
+interface Props {
+  columns: Column[];
+  class?: string;
+}
+
+const { columns, class: className } = Astro.props;
+---
+
+<table class={cn('data-table', className)}>
+  <thead>
+    <tr>
+      {
+        columns.map((column) => (
+          <th style={column.width ? `width:${column.width}` : undefined}>
+            {column.srOnly ? <span class="sr-only">{column.label}</span> : column.label}
+          </th>
+        ))
+      }
+    </tr>
+  </thead>
+  <tbody>
+    <slot />
+  </tbody>
+</table>
