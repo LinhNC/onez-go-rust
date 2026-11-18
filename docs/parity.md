@@ -52,7 +52,19 @@ string, a header name's casing, and a template's escape form.
    normalises header names. HTTP header field names are case-insensitive, and
    every client that reads these responses (browsers, curl, htmx) treats them
    case-insensitively, so no behaviour depends on it.
-5. **HTML escaping in rendered markup.** Askama escapes interpolated `<` as
+5. **Secondary-text contrast.** `assets/app.css` is byte-identical to the file the previous
+   service shipped and reads `--muted` as a text colour; the compiled design-system stylesheet
+   binds `--muted` to that readable Secondary Ink (`#576170`) and gives the recessed wash its own
+   token (`--surface-subtle`), so the rendered text is a shade darker than the Go palette's
+   `#626a78` in the places the redesign touched. The bytes of `app.css`, the asset headers and the
+   markup are unchanged; only the token bindings inside `styles.css` differ, and only in the
+   secondary-text greys.
+6. **Asset cache-buster token.** The console markup requests `/assets/styles.css?v=20261118-1`
+   and `/assets/app.css?v=20261118-1`; the previous service shipped `?v=20260810-2`. The token is
+   bumped because the stylesheet bytes changed (secondary-ink binding), and the asset is served
+   `max-age=31536000, immutable`, so a fresh token is what makes existing browsers drop the old
+   file. Paths, headers and every other byte of the markup are unchanged.
+7. **HTML escaping in rendered markup.** Askama escapes interpolated `<` as
    `&#60;` where Go's templ emitted `&lt;`; both decode to the same text in the
    browser. Template tests assert markers and substrings, never byte-equal HTML.
 

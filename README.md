@@ -16,6 +16,44 @@ A fast, self-hosted URL shortener and management console for one administrator. 
 
 > Shorten uses one SQLite writer. Run exactly one application replica for each database volume.
 
+## Quick start
+
+Requirements: a stable Rust toolchain and a C compiler (the SQLite engine is vendored
+and built from source). Node.js and pnpm are only needed to rebuild the stylesheet; the
+generated CSS is committed.
+
+```sh
+cargo build --release --workspace --bins
+
+SHORTEN_ADDRESS=127.0.0.1:8080 \
+SHORTEN_DATABASE_PATH=$PWD/.data/shorten.db \
+SHORTEN_PUBLIC_BASE_URL=http://127.0.0.1:8080 \
+SHORTEN_ADMIN_API_KEY=$(openssl rand -hex 32) \
+SHORTEN_SESSION_SECRET=$(openssl rand -hex 32) \
+SHORTEN_INSECURE_COOKIES=true \
+./target/release/shorten
+```
+
+Open <http://127.0.0.1:8080/manage/login> and sign in with the API key printed in the
+environment above. `SHORTEN_INSECURE_COOKIES=true` is for local HTTP only; on HTTPS the
+cookie carries the `Secure` flag and the variable must be dropped. `make help` lists the
+workspace tasks (`make build`, `make test`, `make lint`, `make verify`, `make frontend`).
+
+## Screenshots
+
+The console is server-rendered (Askama templates + HTMX fragments) and styled by the
+compiled Astro + shadcn design system, captured at 1280 px and at 390 px:
+
+| Links list | Create link | Edit link | Cleanup preview | Links list, 390 px |
+| --- | --- | --- | --- | --- |
+| ![Links list](screenshots/preview/02-links.jpg) | ![Create link](screenshots/preview/03-new-link.jpg) | ![Edit link](screenshots/preview/04-edit-link.jpg) | ![Cleanup preview](screenshots/preview/07-cleanup.jpg) | ![Links list, 390 px](screenshots/preview/09-links-mobile.jpg) |
+
+Full-resolution originals are in [`screenshots/`](screenshots) (`01-login`,
+`02-links`, `03-new-link`, `04-edit-link`, `05-rename-link`, `06-delete-link`,
+`07-cleanup`, `08-links-search`, `09-links-mobile`, `10-login-mobile`,
+`11-empty-state`), with the smaller JPEGs used above in
+[`screenshots/preview/`](screenshots/preview).
+
 ## Deploy with Docker Compose
 
 For a VPS with a host-level Caddy or Nginx installation:
@@ -61,6 +99,28 @@ SQLite is stored in the `shorten_data` volume. Normal redeploys preserve it, but
 - Include `shorten_data` in the VPS backup plan.
 - Do not store the live database on object storage or an unsafe network filesystem.
 - Test restoration regularly instead of assuming a backup is usable.
+
+## Deploy with Dokploy
+
+[`compose.dokploy.yaml`](compose.dokploy.yaml) is the Dokploy flavour: it joins the
+external `dokploy-network`, exposes `8080` to the Dokploy proxy, runs the image
+read-only as uid 10001 and keeps the database on the `shorten_data` volume. Dokploy
+interpolates Compose before it injects the service environment, so three variables are
+declared as required and the deployment fails with a clear message when one is absent:
+
+```dotenv
+SHORTEN_PUBLIC_BASE_URL=https://links.example.com
+SHORTEN_ADMIN_API_KEY=a2d908244ceca4a8952617563b84b9858d040d50e3dcda059181f7e7effd8e7f
+SHORTEN_SESSION_SECRET=6079419a437b9bd6264b5f8e6b6ba76899536305b7e6bd943d6498f6a339e636
+```
+
+Generate your own values (`openssl rand -hex 32` for each) and paste the block into the
+**Environment** area of the Dokploy Compose service, with the public base URL set to the
+exact origin browsers see — no path, no trailing slash. Everything else in that file has
+a default, including `SHORTEN_ALLOW_NULL_ORIGIN=true`, which Dokploy's opaque-origin
+proxy needs for console form posts. See
+[docs/runbooks/dokploy.md](docs/runbooks/dokploy.md) for the full runbook, secret
+rotation and the interpolation-error table.
 
 ## Configuration
 
@@ -296,7 +356,10 @@ tools are unchanged; only the implementation technology moved.
   feature, which vendors and compiles SQLite with FTS5 enabled. No CGO, no Go toolchain, no
   build tag: a C compiler is the only native requirement.
 - The Go concept stylesheet → the Astro + shadcn design system in `frontend/`, which builds the
-  committed stylesheet embedded into the web crate.
+  committed stylesheet embedded into the web crate. The design system binds secondary text to the
+  Secondary Ink tokens (`--ink-secondary` 6.2:1, `--ink-placeholder` 5.4:1) and keeps the shadcn
+  `muted` wash as a background only, so helper, guidance and metadata copy is readable; `app.css`
+  ships byte-identical to the previous service.
 
 Data compatibility is preserved. The SQLite schema and the `schema_migrations`
 table and migration files are the same, timestamps are stored the same way
@@ -313,3 +376,4 @@ into the Rust service without transformation.
 - [Cloudflare KV migration](docs/kv-migration.md)
 - [Performance benchmark](docs/benchmark.md)
 - [Production cutover and rollback](docs/runbooks/cutover.md)
+- [Dokploy deployment](docs/runbooks/dokploy.md)

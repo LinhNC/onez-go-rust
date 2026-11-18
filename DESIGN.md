@@ -8,6 +8,8 @@ colors:
   ink: "#101216"
   ink-soft: "#363b45"
   muted: "#626a78"
+  inkSecondary: "#576170"
+  inkPlaceholder: "#616b7a"
   line: "#dce1e8"
   line-strong: "#c7ced8"
   signal-blue: "#315dfb"
@@ -110,6 +112,7 @@ The palette uses cool neutral infrastructure with one precise blue signal and re
 - **Carbon Ink** (`#101216`): Headings and high-emphasis text.
 - **Graphite** (`#363b45`): Body text and data values.
 - **Operational Gray** (`#626a78`): Secondary copy that still meets WCAG contrast.
+- **Secondary Ink** (`--ink-secondary`, `#576170`): The readable secondary text colour — 6.2:1 on white, 5.7:1 on canvas. Every `color:` use goes through this token (and `--ink-placeholder`, `#616b7a`, for placeholders). `--muted` resolves to it as well, because the console's `app.css` reads `--muted` as text; the recessed wash itself is a separate token (`--surface-subtle`, `#f0f2f5`) and is only ever a background. Never paint text with a wash.
 - **Structural Line** (`#dce1e8`): Section and row boundaries.
 
 ### Secondary

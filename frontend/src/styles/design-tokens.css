@@ -37,8 +37,10 @@
   /* Ink */
   --ink: #101216; /* Carbon Ink — headings, high-emphasis text */
   --ink-soft: #363b45; /* Graphite — body text, data values */
-  --muted: #626a78; /* Operational Gray — secondary copy (WCAG AA) */
-  --muted-strong: #6f7785; /* Placeholder ink */
+  --ink-secondary: #576170; /* Operational Gray — secondary copy: 6.2:1 on white */
+  --ink-placeholder: #616b7a; /* Placeholder ink: 5.4:1 on white */
+  --muted: #626a78; /* Legacy secondary-ink name; layer 2 rebinds `--muted` to the surface wash. */
+  --muted-strong: #6f7785; /* Legacy placeholder ink */
 
   /* Structure */
   --line: #dce1e8; /* Structural Line — rows, sections, surfaces */
@@ -110,8 +112,14 @@
   --secondary: var(--surface);
   --secondary-foreground: var(--ink-soft);
 
-  --muted: var(--surface-subtle);
-  --muted-foreground: var(--muted);
+  /* shadcn spells the recessed wash `muted`, and its foreground pair
+     `muted-foreground`. The console's older stylesheet (`assets/app.css`, the
+     file the previous service shipped) reads `--muted` as secondary text, so
+     `--muted` resolves to the secondary ink here; the wash itself is exposed
+     to utilities as `bg-muted` through `--color-muted`, which keeps the
+     recessed surface. */
+  --muted: var(--ink-secondary);
+  --muted-foreground: var(--ink-secondary);
 
   /* shadcn `accent` = the quiet hover/selection wash (not the brand blue). */
   --accent: var(--surface-subtle);
@@ -130,7 +138,7 @@
   --border: var(--line);
   --border-strong: var(--line-strong);
   --input: var(--line-strong);
-  --input-placeholder: var(--muted-strong);
+  --input-placeholder: var(--ink-placeholder);
 
   --ring: var(--signal-blue);
   --ring-width: 3px;
@@ -154,8 +162,11 @@
 
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted);
+  /* The wash keeps its role for backgrounds; text keeps the ink. */
+  --color-muted: var(--surface-subtle);
+  --color-muted-foreground: var(--ink-secondary);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-placeholder: var(--ink-placeholder);
 
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
