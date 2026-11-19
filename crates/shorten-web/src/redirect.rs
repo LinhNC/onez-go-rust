@@ -101,10 +101,19 @@ pub async fn handle(
     }
     // `http.Redirect` wrote the status text body for a GET; the Go server
     // suppressed it for HEAD.
-    context::go_redirect(
+    let mut response = context::go_redirect(
         status,
         &item.destination_url,
         &headers,
         method != Method::HEAD,
-    )
+    );
+    response.extensions_mut().insert(PreserveReferrer);
+    response
 }
+
+/// Marks a short-link redirect so the security middleware does not send
+/// `Referrer-Policy`. A policy on a redirect response replaces the referring
+/// page's policy for the next hop, so `no-referrer` would hide the original
+/// source (for example Facebook) from the destination's attribution.
+#[derive(Clone, Copy, Debug)]
+pub struct PreserveReferrer;

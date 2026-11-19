@@ -47,7 +47,7 @@ async fn every_stored_redirect_status_is_answered_verbatim() {
             reply.header("location").map(str::to_string).unwrap(),
             destination
         );
-        reply.assert_security_headers();
+        reply.assert_short_link_redirect_headers();
         reply.assert_no_cache_control();
     }
 
@@ -90,7 +90,7 @@ async fn success_response_is_the_go_redirect_response() {
         "<a href=\"https://shape.example/landing\">Found</a>\n",
         "redirect body: {reply:?}"
     );
-    reply.assert_security_headers();
+    reply.assert_short_link_redirect_headers();
     reply.assert_no_cache_control();
 
     fixture.teardown();
@@ -114,7 +114,7 @@ async fn head_requests_answer_the_redirect_without_a_body() {
         "HEAD carries Location"
     );
     assert!(head.body.is_empty(), "HEAD carries no body: {head:?}");
-    head.assert_security_headers();
+    head.assert_short_link_redirect_headers();
     head.assert_no_cache_control();
     assert_eq!(fixture.visits(slug), 0, "HEAD never reaches the collector");
 

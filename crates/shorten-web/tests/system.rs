@@ -563,7 +563,8 @@ async fn request_ids_follow_the_base36_counter() {
         "36 is the first two-digit identifier"
     );
 
-    // Every response shape carries the header set.
+    // Every response shape carries the header set; only the successful
+    // short-link redirect leaves `Referrer-Policy` to the referring page.
     for (method, path) in [
         ("GET", "/healthz"),
         ("GET", "/readyz"),
@@ -579,7 +580,11 @@ async fn request_ids_follow_the_base36_counter() {
         let reply = fixture
             .request(Req::of(method, path).api_key().build())
             .await;
-        reply.assert_security_headers();
+        if method == "GET" && path == format!("/{slug}") {
+            reply.assert_short_link_redirect_headers();
+        } else {
+            reply.assert_security_headers();
+        }
     }
     fixture.teardown();
 }

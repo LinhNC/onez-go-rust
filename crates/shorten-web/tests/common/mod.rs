@@ -567,14 +567,30 @@ impl Reply {
     /// Assert the middleware stamped every security header.
     pub fn assert_security_headers(&self) {
         assert_eq!(
-            self.header("x-content-type-options"),
-            Some("nosniff"),
-            "X-Content-Type-Options: {self:?}"
-        );
-        assert_eq!(
             self.header("referrer-policy"),
             Some("no-referrer"),
             "Referrer-Policy: {self:?}"
+        );
+        self.assert_security_headers_except_referrer_policy();
+    }
+
+    /// Assert the security headers of a successful short-link redirect: it
+    /// must not override the referring page's policy, so the destination can
+    /// still see where the click came from.
+    pub fn assert_short_link_redirect_headers(&self) {
+        assert_eq!(
+            self.header("referrer-policy"),
+            None,
+            "Referrer-Policy: {self:?}"
+        );
+        self.assert_security_headers_except_referrer_policy();
+    }
+
+    fn assert_security_headers_except_referrer_policy(&self) {
+        assert_eq!(
+            self.header("x-content-type-options"),
+            Some("nosniff"),
+            "X-Content-Type-Options: {self:?}"
         );
         assert_eq!(
             self.header("permissions-policy"),

@@ -201,7 +201,14 @@ async fn security_middleware(State(app): State<App>, request: Request, next: Nex
     let headers = response.headers_mut();
     insert(headers, "X-Request-ID", &id);
     insert(headers, "X-Content-Type-Options", "nosniff");
-    insert(headers, "Referrer-Policy", "no-referrer");
+    if response
+        .extensions()
+        .get::<redirect::PreserveReferrer>()
+        .is_none()
+    {
+        insert(response.headers_mut(), "Referrer-Policy", "no-referrer");
+    }
+    let headers = response.headers_mut();
     insert(
         headers,
         "Permissions-Policy",
