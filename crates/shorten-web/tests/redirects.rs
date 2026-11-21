@@ -501,3 +501,29 @@ async fn an_update_replaces_the_cached_destination() {
 
     fixture.teardown();
 }
+
+/// Visitor query parameters such as Facebook's `fbclid` reach the destination,
+/// but never override a parameter the stored destination already carries.
+#[tokio::test]
+async fn visitor_query_is_forwarded_without_overriding_destination_params() {
+    let fixture = Fixture::new();
+    let slug = "fwdquery01";
+    let _ = fixture.create(input(
+        slug,
+        "https://s.shopee.vn/an_redir?affiliate_id=1&sub_id=a#frag",
+    ));
+
+    let reply = fixture
+        .get(&format!(
+            "/{slug}?fbclid=IwAR%2Fx&affiliate_id=999&utm_source=fb"
+        ))
+        .await;
+    assert_eq!(reply.status, StatusCode::FOUND, "redirect: {reply:?}");
+    assert_eq!(
+        reply.header("location"),
+        Some("https://s.shopee.vn/an_redir?affiliate_id=1&sub_id=a&fbclid=IwAR%2Fx&utm_source=fb#frag"),
+    );
+    reply.assert_short_link_redirect_headers();
+
+    fixture.teardown();
+}

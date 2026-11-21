@@ -3,7 +3,7 @@
 //! Only `GET` and `HEAD` are answered, the redirect cache absorbs repeat
 //! lookups, and a successful `GET` hands the visit to the analytics collector.
 
-use axum::extract::{Path, State};
+use axum::extract::{Path, RawQuery, State};
 use axum::http::header::HeaderMap;
 use axum::http::header::{self, HeaderValue};
 use axum::http::{Method, StatusCode};
@@ -19,6 +19,7 @@ use shorten::observability::RedirectOutcome;
 pub async fn handle(
     State(app): State<App>,
     Path(slug): Path<String>,
+    RawQuery(query): RawQuery,
     headers: HeaderMap,
     method: Method,
 ) -> Response {
@@ -93,7 +94,8 @@ pub async fn handle(
     let status =
         StatusCode::from_u16(u16::try_from(item.redirect_status.clamp(300, 399)).unwrap_or(302))
             .unwrap_or(StatusCode::FOUND);
-    if HeaderValue::try_from(item.destination_url.as_str()).is_err() {
+    let destination = forward_query(&item.destination_url, query.as_deref());
+    if HeaderValue::try_from(destination.as_str()).is_err() {
         // A destination that is not a legal header value is a data fault;
         // answer the same way the previous service answered a broken link.
         tracing::error!(link_id = item.id, "redirect destination is not a valid URL");
@@ -101,14 +103,33 @@ pub async fn handle(
     }
     // `http.Redirect` wrote the status text body for a GET; the Go server
     // suppressed it for HEAD.
-    let mut response = context::go_redirect(
-        status,
-        &item.destination_url,
-        &headers,
-        method != Method::HEAD,
-    );
+    let mut response = context::go_redirect(status, &destination, &headers, method != Method::HEAD);
     response.extensions_mut().insert(PreserveReferrer);
     response
+}
+
+/// Appends the visitor's query parameters (for example Facebook's `fbclid`)
+/// to the destination so click identifiers reach it as they would on a
+/// direct link. Keys the destination already carries are never overridden,
+/// so a visitor cannot rewrite attribution such as `affiliate_id`.
+fn forward_query(destination: &str, query: Option<&str>) -> String {
+    let Some(query) = query.filter(|query| !query.is_empty()) else {
+        return destination.to_string();
+    };
+    let Ok(mut url) = url::Url::parse(destination) else {
+        return destination.to_string();
+    };
+    let existing: std::collections::HashSet<String> =
+        url.query_pairs().map(|(key, _)| key.into_owned()).collect();
+    let extra: Vec<(String, String)> = url::form_urlencoded::parse(query.as_bytes())
+        .filter(|(key, _)| !key.is_empty() && !existing.contains(key.as_ref()))
+        .map(|(key, value)| (key.into_owned(), value.into_owned()))
+        .collect();
+    if extra.is_empty() {
+        return destination.to_string();
+    }
+    url.query_pairs_mut().extend_pairs(extra);
+    url.to_string()
 }
 
 /// Marks a short-link redirect so the security middleware does not send
